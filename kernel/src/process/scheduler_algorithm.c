@@ -96,35 +96,38 @@ static inline task_struct *__scheduler_rr(runqueue_t *runqueue, bool_t skip_peri
 /// As such, shell or the other processes will never be selected. There are
 /// different ways of solving this problem, each of which requires changes only
 /// inside this same function. Good luck.
+
 static inline task_struct *__scheduler_priority(runqueue_t *runqueue, bool_t skip_periodic)
 {
 #ifdef SCHEDULER_PRIORITY
-    // Get the first element of the list.
-    task_struct *next  = list_entry(runqueue->queue.next, struct task_struct, run_list);
-    // This will hold a given entry, while iterating the list of tasks.
+    task_struct *next = NULL;
     task_struct *entry = NULL;
-    // Get the  static priority of the first element of the list we just extracted.
-    time_t min         = /*...*/;
+    int min = 0;
 
-    // Search for the task with the smallest static priority.
+    // Search for the runnable task with the smallest static priority.
     list_for_each_decl (it, &runqueue->queue) {
-        // Check if we reached the head of list_head, and skip it.
+        // Skip the queue head.
         if (it == &runqueue->queue)
             continue;
-        // Get the current entry.
+
+        // Get the current task.
         entry = list_entry(it, task_struct, run_list);
-        // We consider only runnable processes
+
+        // Consider only runnable tasks.
         if (entry->state != TASK_RUNNING)
             continue;
-        // If entry is a periodic task, and we were asked to skip periodic tasks, skip it.
+
+        // Skip periodic tasks when requested.
         if (__is_periodic_task(entry) && skip_periodic)
             continue;
-        // Check if the entry has a lower priority.
-        if (/*...*/) {
-            // Chose the `entry` as the `next` task.
-            /*...*/
+
+        // Select the first eligible task or a task with higher priority.
+        if (next == NULL || entry->se.prio < min) {
+            next = entry;
+            min = entry->se.prio;
         }
     }
+
     return next;
 #else
     return __scheduler_rr(runqueue, skip_periodic);

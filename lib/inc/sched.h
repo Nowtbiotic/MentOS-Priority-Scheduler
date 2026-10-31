@@ -7,7 +7,11 @@
 #include "sys/types.h"
 #include "time.h"
 
-#define REALTIME_SCHEDULER_SUPPORT !SCHEDULER_RR
+#ifdef SCHEDULER_RR
+#define REALTIME_SCHEDULER_SUPPORT 0
+#else
+#define REALTIME_SCHEDULER_SUPPORT 1
+#endif
 
 /// @brief Structure that describes scheduling parameters.
 typedef struct sched_param {
