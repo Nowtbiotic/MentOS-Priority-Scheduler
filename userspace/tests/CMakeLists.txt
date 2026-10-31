@@ -9,6 +9,7 @@ set(TEST_LIST
     t_hashmap.c
     t_proc_feedback.c
     t_procfs_read.c
+    t_priority.c
     t_list.c
     t_msgget.c
     t_pipe_eof_data.c

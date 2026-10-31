@@ -80,6 +80,7 @@ static char *all_tests[] = {
     "t_pipe_eof_data",
     "t_proc_feedback",
     "t_procfs_read",
+    "t_priority",
     "t_periodic2",
     "t_periodic3",
     "t_pipe_blocking",
